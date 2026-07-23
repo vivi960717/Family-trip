@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 泰馬新家庭旅遊行程手冊</title>
+<style>
+  :root{
+    --th:#7b2d26; --th-bg:#fdf3ee;
+    --my:#1c5d4a; --my-bg:#eef7f3;
+    --sg:#1d3d6e; --sg-bg:#eef3fb;
+    --ink:#2b2b2b; --muted:#6b6b6b; --card:#ffffff; --line:#e7e2da;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif;
+    background:#faf7f2; color:var(--ink); line-height:1.6;
+  }
+  header.top{
+    background:linear-gradient(135deg,#7b2d26,#1c5d4a 50%,#1d3d6e);
+    color:#fff; padding:28px 20px 22px;
+  }
+  header.top h1{margin:0 0 6px; font-size:1.4rem;}
+  header.top p{margin:0; opacity:.9; font-size:.9rem;}
+  .share-bar{
+    display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;
+  }
+  .share-btn{
+    display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:20px;
+    border:none; cursor:pointer; font-size:.85rem; font-weight:700; color:#fff;
+  }
+  .share-btn.line{background:#06C755;}
+  .share-btn.copy{background:rgba(255,255,255,.22); backdrop-filter:blur(2px);}
+  .share-toast{
+    position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
+    background:#2b2b2b; color:#fff; padding:10px 18px; border-radius:24px; font-size:.85rem;
+    opacity:0; pointer-events:none; transition:all .25s; z-index:999; max-width:88vw; text-align:center;
+  }
+  .share-toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .score-box{
+    margin:16px 20px; background:#fff; border:1px solid var(--line); border-radius:14px;
+    padding:16px 18px; box-shadow:0 1px 3px rgba(0,0,0,.05);
+  }
+  .score-box h2{margin:0 0 8px; font-size:1.1rem;}
+  .score-box ul{margin:10px 0 0; padding-left:1.2em; font-size:.92rem;}
+  .score-box li{margin-bottom:6px;}
+  .tag-fix{color:#c0392b; font-weight:600;}
+  .tag-ok{color:#1c5d4a; font-weight:600;}
+  nav.jump{
+    display:flex; gap:8px; padding:0 20px 16px; flex-wrap:wrap;
+  }
+  nav.jump a{
+    text-decoration:none; padding:8px 14px; border-radius:20px; font-size:.85rem; font-weight:600;
+    color:#fff;
+  }
+  nav.jump a.th{background:var(--th);}
+  nav.jump a.my{background:var(--my);}
+  nav.jump a.sg{background:var(--sg);}
+  .country-block{padding:6px 16px 30px;}
+  .country-title{
+    display:flex; align-items:center; gap:10px; margin:24px 4px 14px; padding-bottom:8px;
+    border-bottom:3px solid; font-size:1.3rem; font-weight:700;
+  }
+  .country-title.th{color:var(--th); border-color:var(--th);}
+  .country-title.my{color:var(--my); border-color:var(--my);}
+  .country-title.sg{color:var(--sg); border-color:var(--sg);}
+  .country-note{
+    background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px 14px;
+    font-size:.85rem; color:#555; margin-bottom:14px;
+  }
+  details.day{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    margin-bottom:14px; overflow:hidden;
+  }
+  details.day summary{
+    list-style:none; cursor:pointer; padding:14px 16px; font-weight:700; font-size:1rem;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  details.day summary::-webkit-details-marker{display:none;}
+  details.day summary .arrow{transition:transform .2s; font-weight:400; color:var(--muted);}
+  details.day[open] summary .arrow{transform:rotate(90deg);}
+  .th details.day summary{background:var(--th-bg); color:var(--th);}
+  .my details.day summary{background:var(--my-bg); color:var(--my);}
+  .sg details.day summary{background:var(--sg-bg); color:var(--sg);}
+  .day-theme{padding:2px 16px 12px; font-size:.85rem; color:var(--muted); font-style:italic;}
+  .stop{
+    padding:12px 16px; border-top:1px dashed var(--line);
+  }
+  .stop-head{display:flex; justify-content:space-between; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .stop-name{font-weight:700; font-size:.98rem;}
+  .stop-time{font-size:.78rem; color:var(--muted); white-space:nowrap;}
+  .stop-type{font-size:.75rem; color:var(--muted);}
+  .stop-desc{margin:6px 0 4px; font-size:.9rem; color:#3a3a3a;}
+  .transit{
+    margin:6px 0 0; font-size:.82rem; background:#f4f1ea; border-left:3px solid #b9ab8f;
+    padding:6px 10px; border-radius:6px; color:#4a4234;
+  }
+  .transit b{color:#2b2b2b;}
+  .swap-note{
+    margin:6px 0 0; font-size:.8rem; background:#eaf5ee; border-left:3px solid #4a9269;
+    padding:6px 10px; border-radius:6px; color:#245c3d;
+  }
+  .alert{
+    background:#fff6e5; border:1px solid #f0d38a; border-radius:10px; padding:8px 12px; margin:8px 16px 0;
+    font-size:.82rem; color:#8a6300;
+  }
+  footer{text-align:center; padding:24px; color:var(--muted); font-size:.8rem;}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>🌏 泰國．馬來西亞．新加坡 家庭親子行程手冊</h1>
+  <p>2026/7/29 – 8/14　四人親子行（含小孩）　全程優先搭乘軌道運輸（BTS／MRT／LRT）＋全冷氣餐廳版</p>
+  <div class="share-bar">
+    <button class="share-btn line" onclick="shareToLine()">💬 分享到 LINE</button>
+    <button class="share-btn copy" onclick="shareOrCopy()">🔗 分享／複製連結</button>
+  </div>
+  <p style="font-size:.75rem; margin-top:8px; opacity:.85;">👉 若這是下載下來的檔案：直接在 LINE 聊天室「＋」→ 檔案，把這個 .html 檔傳給家人即可，對方點開就能用手機瀏覽器看。若已上傳雲端有網址，上面按鈕會直接開啟分享。</p>
+</header>
+<div class="share-toast" id="shareToast"></div>
+
+<div class="score-box">
+  <h2>本次修改重點</h2>
+  <ul>
+    <li><span class="tag-ok">✅ 交通：</span>每個景點卡片下方新增「🚇交通」欄位，寫出從上一站（或飯店）怎麼搭 BTS／MRT／LRT 過去、約需多久。原則上市區內移動都走軌道運輸，能避開塞車。</li>
+    <li><span class="tag-fix">⚠️ 唯一例外：</span>曼谷飯店 ibis Bangkok IMPACT 位於 Muang Thong Thani，並不在 BTS／MRT 路網上（最近的粉線 MRT 站也要走15–20分鐘，且粉線要轉2次車才會到市中心），每天「飯店⇄第一站／最後一站」這段建議還是搭 Grab 或飯店接駁比較實際，進到市中心後才開始全程軌道運輸。這點請留意，不是我偷懶沒排，是這個飯店位置本身的限制。</li>
+    <li><span class="tag-fix">⚠️ 已修改的燈光秀／時間問題：</span>8/3 Dusit Central Park 標註了實際交通時間；8/14 拿掉 Jewel 燈光秀敘述（因為班機14:00起飛看不到）；8/1、8/3 加上「建議收工時間」提醒。</li>
+    <li><span class="tag-fix">🧊 已更換為有冷氣的餐廳（原本是戶外／無冷氣）：</span>
+      <br>・7/30 Asiatique 海鮮晚餐 → 改為 <b>Peppery Thai Seafood</b>（Asiatique 內玻璃屋全冷氣海鮮餐廳）
+      <br>・8/3 唐人街海鮮晚餐 → 改為 <b>Hua Seng Hong 和成豐</b>（Yaowarat 老字號冷氣餐廳，也有海鮮菜色）
+      <br>・8/1 Or Tor Kor 市場午餐 → 改為市場逛買即可，正式午餐移到隔壁 <b>Union Mall 美食街</b>（冷氣）
+      <br>・8/6 Jalan Alor／Wong Ah Wah 晚餐 → 改為 <b>Pavilion KL 地下美食街</b>（冷氣），Jalan Alor 保留為飯後散步逛街，不當正式用餐點
+      <br>・8/9 Kampung Baru 海鮮晚餐 → 改為 <b>Sri Melayu 餐廳</b>（KLCC 商圈，冷氣＋馬來傳統文化氛圍），Kampung Baru 保留為傍晚拍照散步行程
+      <br>・8/10 Old Airport Road Food Centre → 改為 <b>Kallang Wave Mall 美食街</b>（冷氣，步行可達）
+      <br>・8/12 Chinatown Complex／Maxwell 熟食中心午餐 → 改為附近 <b>Chinatown Point 美食街</b>（冷氣），兩個熟食中心保留為文化參觀、不強制在裡面吃正餐
+      <br>・8/13 Lau Pa Sat 晚餐 → 改為附近 <b>Marina Bay Link Mall 美食街</b>（冷氣）
+    </li>
+    <li style="font-size:.8rem; color:#777;">＊新加坡與馬來西亞的傳統熟食中心（Hawker Centre）本身就是「風扇不裝冷氣」的在地文化，如果你們不排斥流點汗吃道地美食、傍晚天氣涼一點時去，其實體驗感會比冷氣美食街道地很多——上面這些替換都只是「保險起見全部冷氣化」的版本，你也可以挑一兩個熟食中心保留原味，其餘换冷氣，兩者都附上讓你自己選。</li>
+  </ul>
+</div>
+
+<nav class="jump">
+  <a class="th" href="#thailand">🇹🇭 泰國</a>
+  <a class="my" href="#malaysia">🇲🇾 馬來西亞</a>
+  <a class="sg" href="#singapore">🇸🇬 新加坡</a>
+</nav>
+
+<!-- ============ THAILAND ============ -->
+<div class="country-block th" id="thailand">
+  <div class="country-title th">🇹🇭 泰國曼谷（7/29–8/3）</div>
+  <div class="country-note">🚇 曼谷軌道系統：BTS（Skytrain，分 Sukhumvit 線／Silom 線）＋ MRT（藍線／粉線）。飯店 ibis Bangkok IMPACT 不在路網上，往返市中心請用 Grab／飯店接駁（約20–30分鐘車程），抵達市中心後以下全部改搭 BTS／MRT。</div>
+
+  <details class="day" open>
+    <summary>7/29（三）抵達曼谷 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：抵達、休息、熟悉飯店周邊</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🏨 ibis Bangkok IMPACT</span><span class="stop-time">入住</span></div>
+      <p class="stop-desc">位於 IMPACT 展覽館園區旁的平價國際連鎖飯店，鄰近湄南河畔，房間簡潔實用，適合作為家庭旅遊的落腳點，周邊有接駁與商場可補給日用品。</p>
+      <div class="transit">🚕 機場→飯店：建議直接搭 Grab／飯店接駁車前往，車程約30–40分鐘（此飯店不在BTS/MRT路網上）。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ Cosmo Bazaar</span><span class="stop-type">社區型購物商場</span></div>
+      <p class="stop-desc">鄰近 IMPACT 展覽館的社區型商場，規模不大但生活機能齊全，有超市、藥妝與美食廣場，很適合抵達當天不想跑遠、只想吹冷氣休息採買的旅客。</p>
+      <div class="transit">🚶 飯店步行約5–10分鐘可達，不需搭車。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍜 Cosmo Bazaar Food Court</span><span class="stop-time">晚餐</span></div>
+      <p class="stop-desc">商場內的泰式美食廣場，攤位多為當地小吃店，價格親民、出餐快，適合帶小孩的家庭快速解決第一餐，推薦打拋豬、船麵、芒果糯米飯與泰奶。全區冷氣開放。</p>
+      <div class="transit">🚶 與 Cosmo Bazaar 同一棟，不需移動。</div>
+    </div>
+  </details>
+
+  <details class="day">
+    <summary>7/30（四）舊城區＋河岸夜景 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：老街文化＋河岸夜景＋海鮮晚餐</div>
+    <div class="alert">🚕 飯店距離市中心較遠，今天第一站建議搭 Grab 直達，回程也建議 Grab（約30分鐘），中段景點之間都能用 BTS／MRT／船。</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍜 Hello Sit Down by Ladda Aunt</span><span class="stop-time">午餐</span></div>
+      <p class="stop-desc">位於老城區的在地泰式餐廳，主打家常口味與親民價位，裝潢帶點懷舊風，招牌包括炒河粉、冬蔭功與綠咖哩雞，很適合當作逛老街前的暖胃一餐。室內有冷氣。</p>
+      <div class="transit">🚕 飯店→此處：搭 Grab 約30分鐘直達（無便捷軌道路線）。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🏘️ Song Wat 嵩越路</span><span class="stop-type">歷史老街／文青街區</span></div>
+      <p class="stop-desc">緊鄰唐人街的百年老街，近年翻新出許多咖啡店、選品店與塗鴉牆，中式老建築與河岸倉庫交錯，是曼谷年輕人拍照打卡的新興文青熱區，適合悠閒散步。</p>
+      <div class="transit">🚶 從餐廳步行約5–10分鐘即可抵達，走累了沿途有不少冷氣咖啡廳可休息。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🎡 Asiatique The Riverfront</span><span class="stop-time">建議16:00後</span></div>
+      <p class="stop-desc">湄南河畔由舊倉庫改建的大型夜市商場，有摩天輪、河景餐廳與特色小店，晚上點燈後氣氛浪漫，需搭船或接駁抵達，是曼谷最經典的親子夜遊景點之一。</p>
+      <div class="transit">🚇 Song Wat 步行至 MRT Wat Mangkon（約10分鐘）→ 搭MRT藍線至 Hua Lamphong 站，或直接 Grab 至 BTS Saphan Taksin（沙潘塔克辛站）→ 出站轉免費接駁船（約10分鐘船程）至 Asiatique，全程約30–40分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🧊 Peppery Thai Seafood（Asiatique 內）</span><span class="stop-time">晚餐・已替換</span></div>
+      <p class="stop-desc">Asiatique 園區內少數全室內冷氣的泰式海鮮餐廳，玻璃屋裝潢明亮舒適，招牌蟹肉煎蛋、烤豬頸肉與綠咖哩都受好評，親子友善、下雨也不受影響，園區內有2間分店。</p>
+      <div class="swap-note">🧊 已將原本戶外露天的河岸海鮮餐廳替換為此間全冷氣海鮮餐廳，就在 Asiatique 園區內，不需額外移動。</div>
+    </div>
+  </details>
+
+  <details class="day">
+    <summary>7/31（五）ICONSIAM＋Siam 商圈 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：曼谷代表百貨＋年輕商圈＋泰式料理</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ ICONSIAM</span><span class="stop-time">10:00–22:00</span></div>
+      <p class="stop-desc">湄南河畔的旗艦級百貨，以金色外觀與河景著稱，內有水上市場主題美食街、精品樓層與大型旗艦店，是曼谷近年最具代表性的購物地標之一，全年無休。</p>
+      <div class="transit">🚕 飯店→此處：搭 Grab 約30–35分鐘直達，或先 Grab 到 BTS Saphan Taksin 再轉免費接駁船（約10分鐘）。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍜 SookSiam</span><span class="stop-time">午餐</span></div>
+      <p class="stop-desc">ICONSIAM 地下樓層的室內水上市場主題美食街，重現泰國各地傳統市集風情，可搭小船買小吃，聚集全泰知名小吃攤，泰式炒河粉、海南雞飯都能吃到。全區冷氣。</p>
+      <div class="transit">🚶 位於 ICONSIAM 地下樓層，直接搭手扶梯前往即可。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ Siam Square</span><span class="stop-type">年輕人流行商圈</span></div>
+      <p class="stop-desc">曼谷最具指標性的年輕潮流商圈，巷弄內滿是泰系服飾小店、美妝店與甜點店，鄰近多所大學，逛街氣氛活潑年輕，也是購買泰國平價美妝的熱門去處。</p>
+      <div class="transit">⛴️ ICONSIAM 碼頭搭免費接駁船回 BTS Saphan Taksin → 轉搭 BTS Silom 線至 Siam 站（Sukhumvit／Silom 線交會站），全程約25–30分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍛 Inter Restaurant</span><span class="stop-time">晚餐</span></div>
+      <p class="stop-desc">Siam 商圈附近經營數十年的泰式老字號，以咖哩炒螃蟹聞名，價格親民、份量實在，是當地人與觀光客都愛的排隊名店，適合全家共享多道菜。室內冷氣。</p>
+      <div class="transit">🚶 從 Siam Square 步行約5–8分鐘即可抵達。</div>
+    </div>
+  </details>
+
+  <details class="day">
+    <summary>8/1（六）北曼谷市集＋城堡夜市 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：週末市集＋購物＋特色夜市</div>
+    <div class="alert">⏰ 整天跨度長，建議設定「軟性收工時間」約21:00–21:30，夜市開到24:00但不用硬撐，小孩累了隨時可提早搭車回飯店。</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛒 Chatuchak Weekend Market</span><span class="stop-time">建議09:30–12:00</span></div>
+      <p class="stop-desc">全球知名的週末超大型市集，僅週六日開放，上萬個攤位涵蓋服飾、雜貨、手作與家飾，建議一早前往避開人潮與高溫，逛累了市集內也有不少冷氣咖啡廳。</p>
+      <div class="transit">🚕 飯店→此處：搭 Grab 約30–35分鐘，或 Grab 至 BTS Ha Yaek Lat Phrao 站後步行前往。抵達後可直接搭 MRT 藍線至 Chatuchak Park 站或 BTS Mo Chit 站。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🥭 Or Tor Kor Market</span><span class="stop-type">逛買水果／熟食，不安排正式用餐</span></div>
+      <p class="stop-desc">緊鄰 Chatuchak 的高品質市場，以新鮮水果、海鮮與熟食聞名，環境比一般市場乾淨明亮，很適合現場買現切芒果、椰子冰或熟食帶到冷氣美食街享用。</p>
+      <div class="transit">🚇 從 Chatuchak Market 步行至 MRT Kamphaeng Phet 站（約5分鐘），或直接步行穿越至 Or Tor Kor（約10分鐘）。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🧊 Union Mall 美食街</span><span class="stop-time">午餐・已替換為正式用餐點</span></div>
+      <p class="stop-desc">鄰近 BTS Mo Chit 站的年輕人平價百貨，以泰國本土服飾品牌與潮流小店為主，地下美食街全冷氣、選擇多元，是中午躲避戶外高溫用餐的理想地點。</p>
+      <div class="swap-note">🧊 原本安排 Or Tor Kor 現場用餐（半戶外、無完整冷氣），改為市場買食材／熟食後移到 Union Mall 冷氣美食街享用，兩者都逛得到。</div>
+      <div class="transit">🚇 MRT Kamphaeng Phet 站搭一站至 Chatuchak Park／轉 BTS 至 Mo Chit 站，出站即達 Union Mall（步行約2分鐘），全程約10–15分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🌃 Liabduan Danneramit Night Market</span><span class="stop-time">每日16:00–24:00</span></div>
+      <p class="stop-desc">2025 年新開幕的城堡主題夜市，保留原遊樂園的夢幻城堡建築，攤位以平價小吃與遊樂設施為主，動線分區清楚，每天固定 16:00 開到午夜，適合親子夜遊。</p>
+      <div class="transit">🚇 BTS Mo Chit → 搭 BTS Sukhumvit 線2站至 Ha Yaek Lat Phrao 站，出站步行約5–10分鐘抵達，全程約15–20分鐘。</div>
+    </div>
+  </details>
+
+  <details class="day">
+    <summary>8/2（日）CentralWorld＋按摩＋美食街 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：百貨購物＋伴手禮＋按摩＋曼谷美食街</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ CentralWorld</span><span class="stop-time">10:00–22:00</span></div>
+      <p class="stop-desc">曼谷市中心規模數一數二的大型百貨，樓層眾多、品牌齊全，緊鄰四面佛與 BTS Chit Lom 站，交通便利，是雨天或酷熱天氣躲避戶外的最佳選擇之一。</p>
+      <div class="transit">🚕 飯店→此處：搭 Grab 約30分鐘直達（無便捷軌道路線），或 Grab 至市中心後改搭 BTS 至 Chit Lom 站，出站即達。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍛 168 Thai Restaurant</span><span class="stop-time">午餐</span></div>
+      <p class="stop-desc">位於商圈周邊的家常泰式餐廳，主打打拋豬、冬蔭功等經典泰菜，價格中等、口味不過度觀光化，適合帶小孩用餐、出餐速度也相對穩定。室內冷氣。</p>
+      <div class="transit">🚶 CentralWorld 內或步行可達，約3–5分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛒 Big C Supercenter</span><span class="stop-type">伴手禮超市</span></div>
+      <p class="stop-desc">泰國連鎖大型超市，是採購泰式伴手禮的熱門地點，舉凡泰奶粉、乾燥水果、零食與各式調味料一應俱全，且常有滿額退稅服務，很適合家庭一次採購完成。</p>
+      <div class="transit">🚶 就在 CentralWorld 對面，步行約5分鐘（有空橋相連，不需日曬）。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">💆 Health Land Sathon</span><span class="stop-time">建議預約2小時</span></div>
+      <p class="stop-desc">曼谷知名連鎖泰式按摩品牌，環境乾淨、價格比觀光區實惠，師傅手法穩定，是行程中段讓大人放鬆雙腳、消除逛街疲勞的理想安排，建議提前預約時段。全館冷氣。</p>
+      <div class="transit">🚇 BTS Chit Lom → 搭 BTS Silom 線至 Surasak 站，出站步行約5分鐘，全程約20分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍢 Banthat Thong Road</span><span class="stop-time">晚餐（部分戶外）</span></div>
+      <p class="stop-desc">鄰近朱拉隆功大學的知名美食街，以海鮮燒烤與甜點聞名，After You 甜點店（冷氣）可作為正式用餐點，戶外燒烤攤則可外帶或飯後散步邊逛邊吃。</p>
+      <div class="swap-note">🧊 建議正餐選在 After You 或路口的冷氣泰式餐廳內用，戶外烤海鮮攤當作飯後散步宵夜點心即可，兼顧道地氣氛與吹冷氣需求。</div>
+      <div class="transit">🚇 Surasak 站 → 搭 BTS Silom 線至 Sala Daeng 站轉 MRT 藍線至 Sam Yan 站，出站步行約5分鐘，全程約20–25分鐘。</div>
+    </div>
+  </details>
+
+  <details class="day">
+    <summary>8/3（一）美妝＋新百貨＋唐人街海鮮 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：美妝採買＋新百貨體驗＋曼谷海鮮收尾</div>
+    <div class="alert">⏰ 今天行程從10:00到晚上唐人街晚餐，跨度約8–9小時，建議中午在 Dusit Central Park 安排1小時左右的用餐＋休息，別急著趕下一站。晚餐建議20:30前入座，避免小孩太累太餓。</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">💄 EVEANDBOY Centerpoint Siam Square</span><span class="stop-time">10:00–22:00</span></div>
+      <p class="stop-desc">泰國最大美妝連鎖店的 Siam 旗艦店，集結 Browit、4U2、Cathy Doll、Srichand、Mistine 等泰系人氣品牌，價格常比機場免稅更划算，是採購泰妝的首選。</p>
+      <div class="transit">🚕 飯店→此處：搭 Grab 約30–35分鐘直達，或 Grab 至市中心後轉 BTS 至 Siam 站，出站即達。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ Dusit Central Park</span><span class="stop-type">2025年9月新開幕大型複合商場</span></div>
+      <p class="stop-desc">位於是隆路與拉瑪四路口的全新地標商場，2025年9月開幕，擁有泰國最大空中花園與集結逾10間米其林推薦美食的地下美食街，設計時尚是近期打卡熱點。午餐可直接在此解決（地下美食街冷氣）。</p>
+      <div class="transit">🚇 Siam 站搭 BTS Silom 線至 Sala Daeng 站（約4站，10分鐘），出站步行約5分鐘即達，或於 Sala Daeng 轉 MRT 至 Silom 站直接連通商場，全程約20–25分鐘。（此商場實際位於 Silom 區，並非緊鄰 Siam，請預留交通時間）</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🏮 Yaowarat Road 唐人街</span><span class="stop-time">建議17:30後</span></div>
+      <p class="stop-desc">曼谷歷史悠久的中國城主街，入夜後兩側海鮮燒烤攤與老字號餐廳齊開，招牌燈飾與炭烤香氣交織，是曼谷夜晚最具代表性的美食街景之一，適合飯前飯後散步。</p>
+      <div class="transit">🚇 MRT Silom 站搭藍線至 Wat Mangkon 站（約3站，10分鐘），出站即達唐人街入口，全程約15分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🧊 Hua Seng Hong 和成豐</span><span class="stop-time">晚餐・已替換</span></div>
+      <p class="stop-desc">唐人街超過半世紀歷史的老字號中泰餐廳，全室內冷氣、環境寬敞舒適，招牌咖哩炒蟹、蝦仁料理與烤鴨都受好評，是在悶熱唐人街裡難得能吹冷氣用餐的名店。</p>
+      <div class="swap-note">🧊 已將原本兩間戶外露天的 T&K Seafood／Lek & Rut Seafood 替換為這間全冷氣老字號餐廳，一樣吃得到海鮮料理。</div>
+      <div class="transit">🚶 位於 Yaowarat Road 主街上，步行即可抵達，不需搭車。</div>
+    </div>
+  </details>
+</div>
+
+<!-- ============ MALAYSIA ============ -->
+<div class="country-block my" id="malaysia">
+  <div class="country-title my">🇲🇾 馬來西亞吉隆坡（8/4–8/9）</div>
+  <div class="country-note">🚇 吉隆坡軌道系統：LRT（Kelana Jaya 線／Ampang 線／Sri Petaling 線）＋ MRT（Kajang 線／Putrajaya 線）＋單軌 Monorail。飯店 DoubleTree（The Intermark）鄰近 Ampang Park LRT 站與 KLCC MRT 站，兩者步行約10–15分鐘可達，交通算方便。</div>
+
+  <details class="day">
+    <summary>8/4（二）抵達吉隆坡 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：抵達＋休息＋熟悉飯店周邊</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🏨 DoubleTree by Hilton Kuala Lumpur</span><span class="stop-time">入住</span></div>
+      <p class="stop-desc">位於 The Intermark 商辦與購物綜合體內的國際連鎖飯店，鄰近雙子星塔與 KLCC 商圈，交通便利、房型舒適，很適合作為吉隆坡旅遊的中心據點。</p>
+      <div class="transit">🚕 機場（KLIA）→飯店：建議搭機場快線 KLIA Ekspres 至 KL Sentral（約28分鐘），再轉 Grab 或 LRT 至 Ampang Park 站（約15–20分鐘），總車程約1小時。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ The Intermark Mall</span><span class="stop-type">飯店樓下購物商場</span></div>
+      <p class="stop-desc">與飯店共構的中型商場，有超市、餐廳與便利設施，規模不大但生活機能足夠，適合抵達當天不想跑遠、先熟悉環境並補給日用品的行程安排。</p>
+      <div class="transit">🚶 與飯店同棟，搭電梯直達即可。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍲 阿喜肉骨茶</span><span class="stop-time">晚餐</span></div>
+      <p class="stop-desc">馬來西亞人氣連鎖肉骨茶品牌，以濃郁藥膳湯頭與軟嫩排骨聞名，配上滷豆腐、油條與白飯，是抵達吉隆坡當晚暖胃的經典選擇，接受度高、小孩也適合吃。室內冷氣。</p>
+      <div class="transit">🚕 建議 Grab 前往（約10–15分鐘），視分店位置而定。</div>
+    </div>
+  </details>
+
+  <details class="day">
+    <summary>8/5（三）KLCC＋椰漿飯＋限定夜市 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：馬來西亞必吃早餐＋雙子星＋限定夜市</div>
+    <div class="alert">⚠️ Village Park Restaurant 知名分店位於 Damansara Uptown，距離飯店較遠，非 LRT/MRT 直達，建議搭 Grab 前往（車程約25–30分鐘視路況），回程再搭 LRT 銜接下一站。</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍛 Village Park Restaurant</span><span class="stop-time">早／午餐</span></div>
+      <p class="stop-desc">吉隆坡人氣爆棚的椰漿飯專門店，招牌炸雞椰漿飯外酥內嫩、香氣十足，常需排隊，是體驗馬來西亞國民早餐的代表名店，另有拉茶等在地飲品可搭配。室內冷氣。</p>
+      <div class="transit">🚕 飯店→此處：搭 Grab 約25–30分鐘（Damansara Uptown，無直達軌道站）。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ Suria KLCC</span><span class="stop-time">10:00–22:00</span></div>
+      <p class="stop-desc">緊鄰雙子星塔的大型百貨商場，樓層寬敞、品牌齊全，內有 Isetan 百貨與大型超市，商場大廳可近距離仰望雙子星，是吉隆坡最經典的地標購物體驗。</p>
+      <div class="transit">🚕 Village Park → Grab 至 LRT Kelana Jaya 線任一站（如 Taman Jaya），搭至 KLCC 站，出站直通商場，總車程＋搭乘約30分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🌃 Taman Connaught 康樂夜市</span><span class="stop-time">每週三17:00–01:00</span></div>
+      <p class="stop-desc">全馬數一數二長的夜市，僅每週三開放，長達逾兩公里、攤位近700個，匯集馬來、華人、印度三大族群小吃，是最具在地生活感的限定夜市體驗。</p>
+      <div class="transit">🚇 KLCC 站搭 MRT Kajang 線至 Cochrane 站轉乘，或直接搭 MRT Putrajaya 線至 Taman Connaught 站，出站即達夜市入口，全程約30–35分鐘（建議先用地圖 App 確認當日最新轉乘路線）。</div>
+    </div>
+  </details>
+
+  <details class="day">
+    <summary>8/6（四）Bukit Bintang 商圈＋TRX＋晚餐 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：KL 最熱門購物區＋夜生活</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ Pavilion Kuala Lumpur</span><span class="stop-time">10:00–22:00</span></div>
+      <p class="stop-desc">吉隆坡最指標性的高級百貨之一，位於 Bukit Bintang 核心，精品、美妝與美食樓層齊全，裝潢氣派，是逛街兼躲避午後高溫的熱門去處。</p>
+      <div class="transit">🚇 飯店（Ampang Park LRT）→搭 LRT Kelana Jaya 線至 KLCC 站轉步行，或 Grab／步行至 Bukit Bintang MRT 站（Kajang 線）直接連通 Pavilion，全程約15–20分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍗 何九海南茶店</span><span class="stop-time">午餐</span></div>
+      <p class="stop-desc">吉隆坡知名海南餐飲老店，招牌海南雞飯口感軟嫩多汁，搭配傳統咖椰吐司與拉茶，是體驗馬來西亞海南文化飲食的經典選擇，接受度高。室內冷氣。</p>
+      <div class="transit">🚶 Bukit Bintang 周邊步行約5–10分鐘可達。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ The Exchange TRX</span><span class="stop-type">最新大型購物中心</span></div>
+      <p class="stop-desc">吉隆坡近年新地標購物中心，位於 TRX 金融區，引進 Apple、Sephora 等國際品牌與大量餐飲選擇，空間新穎寬敞，也有室內休息區適合親子稍作停留。</p>
+      <div class="transit">🚇 Bukit Bintang 站搭 MRT Kajang 線1站至 TRX 站，出站直通商場，車程約5分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🧊 Pavilion KL 地下美食街</span><span class="stop-time">晚餐・已替換</span></div>
+      <p class="stop-desc">Pavilion 地下樓層的冷氣美食街，選擇多元，從在地馬來料理、燒烤到日韓料理都有，環境舒適明亮，適合帶小孩用餐不用擔心悶熱。</p>
+      <div class="swap-note">🧊 原本安排的 Wong Ah Wah（黃亞華）在戶外的亞羅街，已改為 Pavilion 地下美食街正式用餐；吃飽後仍可散步到亞羅街逛逛、買點宵夜小吃，體驗夜市氣氛但不用整餐坐戶外。</div>
+      <div class="transit">🚇 TRX 站搭 MRT 1站回 Bukit Bintang 站，出站直通 Pavilion，車程約5分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🌃 Jalan Alor 亞羅街</span><span class="stop-type">飯後散步逛街（戶外）</span></div>
+      <p class="stop-desc">吉隆坡最著名的露天美食街，入夜後兩側攤販與海鮮餐廳齊開，燈火通明、人聲鼎沸，適合吃飽飯後散步逛逛、買杯飲料或小吃感受夜市氣氛。</p>
+      <div class="transit">🚶 從 Pavilion 步行約5–8分鐘即可抵達。</div>
+    </div>
+  </details>
+
+  <details class="day">
+    <summary>8/7（五）傳統市場＋老城區 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：傳統市場＋文化街區＋美食</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🥢 ICC Pudu</span><span class="stop-time">建議09:00起</span></div>
+      <p class="stop-desc">吉隆坡人氣室內熟食早市，以牛肉粉、咖椰吐司與半熟蛋等在地早餐聞名，環境比露天市場乾淨舒適，適合帶小孩體驗馬來西亞道地早市文化。</p>
+      <div class="transit">🚕 飯店→此處：Grab 約15分鐘，或搭 LRT Ampang 線至 Plaza Rakyat 站步行前往（約10分鐘）。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ 茨廠街 Petaling Street</span><span class="stop-type">唐人街市集</span></div>
+      <p class="stop-desc">吉隆坡歷史最悠久的唐人街市集，街道兩旁滿是小吃攤與紀念品店，古早味濃厚，是感受馬來西亞華人文化與挑選伴手禮的熱門去處。</p>
+      <div class="transit">🚇 ICC Pudu 步行至 Plaza Rakyat LRT 站搭1站至 Pasar Seni 站，出站步行約5分鐘，全程約10–15分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🎁 Central Market</span><span class="stop-type">文創市場</span></div>
+      <p class="stop-desc">鄰近茨廠街的室內文創市集，前身為傳統市場，現以馬來西亞手工藝品與特色紀念品為主，冷氣充足，適合逛累了進來吹冷氣兼採購伴手禮。</p>
+      <div class="transit">🚶 從茨廠街步行約3–5分鐘即達，或直接從 Pasar Seni 站出站即到。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍜 海腳人</span><span class="stop-time">午餐</span></div>
+      <p class="stop-desc">在地馬來西亞料理餐廳，招牌福建炒麵與咖哩魚頭風味濃郁道地，價格親民、份量足，是體驗馬來西亞家常美食的實在選擇。室內冷氣。</p>
+      <div class="transit">🚶 Central Market 周邊步行可達，約5分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍽️ Lot 10 Hutong</span><span class="stop-time">晚餐</span></div>
+      <p class="stop-desc">Lot 10 百貨地下樓的傳奇美食街，集結多家吉隆坡老字號攤販，金蓮記福建麵、牛肉麵與沙嗲皆為人氣招牌，室內用餐環境舒適，很適合帶小孩用餐。全區冷氣。</p>
+      <div class="transit">🚇 Pasar Seni 站搭 LRT Kelana Jaya 線至 Bukit Bintang 站，出站步行至 Lot 10，全程約15–20分鐘。</div>
+    </div>
+  </details>
+
+  <details class="day">
+    <summary>8/8（六）平價購物日 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：平價購物＋室內休閒</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ Sungei Wang Plaza 金河廣場</span><span class="stop-type">平價購物商場</span></div>
+      <p class="stop-desc">吉隆坡歷史悠久的平價購物商場，以年輕服飾、鞋類與小物聞名，價格實惠、店家密集，是尋找便宜好貨與體驗在地購物氣氛的熱門去處。</p>
+      <div class="transit">🚇 飯店 Ampang Park 站搭 LRT Kelana Jaya 線至 KLCC 站轉步行，或直接 Grab／MRT 至 Bukit Bintang 站，出站步行約3分鐘即達，全程約15–20分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍛 NC Curry House</span><span class="stop-time">午餐</span></div>
+      <p class="stop-desc">道地印度風味餐廳，招牌印度煎餅 Roti Canai 酥脆多層，搭配咖哩雞與拉茶，是體驗馬來西亞多元族群飲食文化的經典選擇。室內冷氣。</p>
+      <div class="transit">🚶 Sungei Wang 周邊步行約5分鐘可達。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ Berjaya Times Square</span><span class="stop-type">大型百貨＋室內遊樂園</span></div>
+      <p class="stop-desc">吉隆坡少見結合購物與室內遊樂設施的大型商場，內設室內雲霄飛車與遊樂區，很適合帶小孩來邊逛街邊玩樂，同時避開午後戶外高溫與雷陣雨。</p>
+      <div class="transit">🚇 步行至 Imbi 單軌站或 Hang Tuah LRT 站，1站可達 Imbi／Hang Tuah 站，出站步行約3–5分鐘，全程約10–15分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍖 王美記燒肉</span><span class="stop-time">晚餐</span></div>
+      <p class="stop-desc">在地知名港式燒臘店，叉燒油亮多汁、燒肉皮脆肉嫩，搭配雲吞麵一起品嚐，口味熟悉度高，是帶小孩用餐接受度高的穩妥選項。室內冷氣。</p>
+      <div class="transit">🚕 視分店位置建議 Grab 前往，約10–15分鐘。</div>
+    </div>
+  </details>
+
+  <details class="day">
+    <summary>8/9（日）最後採買＋馬來文化＋晚餐收尾 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：最後採買＋馬來文化＋道地晚餐</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">☕ 溏記海南茶室</span><span class="stop-time">早餐</span></div>
+      <p class="stop-desc">馬來西亞經典海南式茶室，招牌咖椰吐司配半熟蛋與 Kopi，氛圍懷舊道地，是體驗馬來西亞人日常早餐文化的輕鬆選擇。室內冷氣。</p>
+      <div class="transit">🚕 建議 Grab 前往，視分店位置約10–15分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ MyTown Shopping Centre</span><span class="stop-time">10:00–22:00</span></div>
+      <p class="stop-desc">吉隆坡大型生活型購物商場，內有 IKEA、Watsons、Guardian 與大型超市，很適合作為出國前最後採買日常用品與伴手禮的一站式去處。</p>
+      <div class="transit">🚇 搭 MRT Kajang 線至 Cochrane 站，出站直通商場，從市中心約15–20分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🏘️ Kampung Baru 甘榜峇魯</span><span class="stop-type">傍晚拍照散步（戶外）</span></div>
+      <p class="stop-desc">緊鄰雙子星商圈的傳統馬來聚落，保留高腳屋與在地生活風貌，傍晚天氣較涼時可遠眺雙子星夜景，很適合拍照散步，感受與市中心強烈的城市反差。</p>
+      <div class="transit">🚇 Cochrane 站搭 MRT Kajang 線至 Kampung Baru 站，出站即達，全程約15–20分鐘。建議傍晚較涼時段前往，避開正午曝曬。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🧊 Sri Melayu 餐廳</span><span class="stop-time">晚餐・已替換</span></div>
+      <p class="stop-desc">KLCC 商圈知名的傳統馬來文化主題餐廳，室內冷氣＋自助式馬來料理吧，環境寬敞舒適，很適合作為吉隆坡行程收尾的文化體驗晚餐，取代戶外海鮮攤。</p>
+      <div class="swap-note">🧊 原本安排在 Kampung Baru 現場戶外海鮮攤用餐，已改為附近 KLCC 商圈的冷氣馬來餐廳，Kampung Baru 保留為傍晚散步拍照行程。</div>
+      <div class="transit">🚇 Kampung Baru 站搭 MRT 至 KLCC 站（約2站，8分鐘），出站步行約10分鐘或轉 Grab 前往餐廳。</div>
+    </div>
+  </details>
+</div>
+
+<!-- ============ SINGAPORE ============ -->
+<div class="country-block sg" id="singapore">
+  <div class="country-title sg">🇸🇬 新加坡（8/10–8/14）</div>
+  <div class="country-note">🚇 新加坡 MRT 路網密集完整：東西線（綠線）、南北線（紅線）、東北線（紫線）、環線（黃線）、濱海市區線（藍線）。飯店 V Hotel Lavender 就在 Lavender 站（東西線）上，交通非常方便，全程都能靠地鐵完成。</div>
+
+  <details class="day">
+    <summary>8/10（一）抵達新加坡 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：抵達＋休息＋第一次吃新加坡熟食中心</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🏨 V Hotel Lavender</span><span class="stop-time">入住</span></div>
+      <p class="stop-desc">鄰近 Lavender MRT 站的平價設計飯店，交通便利、房型現代簡潔，適合作為新加坡旅遊初期落腳、隔天再往市區展開行程的基地。</p>
+      <div class="transit">🚕 從吉隆坡搭飛機抵達樟宜機場後，搭 MRT 東西線直達 Lavender 站（中途於 Tanah Merah 站轉車），出站步行約3分鐘即達飯店，全程約50–55分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍜 Lavender 商圈</span><span class="stop-type">在地生活圈</span></div>
+      <p class="stop-desc">飯店周邊的在地生活型街區，超市、便利商店與平價餐飲林立，抵達當天不趕行程，很適合在此熟悉環境、採買日用品放鬆一下。</p>
+      <div class="transit">🚶 飯店周邊步行即可，不需搭車。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🧊 Kallang Wave Mall 美食街</span><span class="stop-time">晚餐・已替換</span></div>
+      <p class="stop-desc">位於新加坡體育城旁的購物中心，內設 Koufu 冷氣美食街，攤位選擇多元，肉脞麵、炒粿條、沙嗲等新加坡經典小吃都吃得到，環境明亮舒適不悶熱。</p>
+      <div class="swap-note">🧊 原本安排的 Old Airport Road Food Centre 是傳統風扇熟食中心，已改到附近有冷氣的 Kallang Wave Mall 美食街，口味類似但更涼爽。</div>
+      <div class="transit">🚇 Lavender 站搭 MRT 東西線至 Aljunied 站轉乘，或直接 Grab／步行至 Stadium 站（環線），出站直通 Kallang Wave Mall，全程約15–20分鐘。</div>
+    </div>
+  </details>
+
+  <details class="day">
+    <summary>8/11（二）Bugis＋Orchard 購物日 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：新加坡人氣購物區＋百貨美食</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ Bugis Junction</span><span class="stop-type">人氣大型百貨公司</span></div>
+      <p class="stop-desc">新加坡年輕族群喜愛的冷氣購物中心，玻璃屋頂設計採光良好，內有美食街、藥妝與服飾店，是躲避新加坡午後高溫與陣雨的舒適去處。</p>
+      <div class="transit">🚇 Lavender 站搭 MRT 東西線至 Bugis 站（1站，約3分鐘），出站直通商場。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛒 Bugis Street</span><span class="stop-type">新加坡熱門平價市集</span></div>
+      <p class="stop-desc">新加坡最著名的平價購物市集之一，密集攤位販售服飾、紀念品與小物，價格親民、氣氛熱鬧，是尋找新加坡平價伴手禮的熱門去處。部分走道有遮頂與風扇。</p>
+      <div class="transit">🚶 與 Bugis Junction 相通，步行1–2分鐘即達。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍜 Bugis Junction Food Court</span><span class="stop-time">午餐</span></div>
+      <p class="stop-desc">商場內的室內美食街，環境舒適、選擇多元，海南雞飯、叻沙與肉骨茶等新加坡經典小吃都能一次吃到，很適合帶小孩用餐休息。全區冷氣。</p>
+      <div class="transit">🚶 位於 Bugis Junction 內，直接搭手扶梯前往即可。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ ION Orchard</span><span class="stop-time">約10:00–22:00</span></div>
+      <p class="stop-desc">烏節路最具代表性的地標百貨，建築外觀前衛，集結國際精品與美妝品牌，地下樓層的美食街也相當知名，是新加坡購物行程必訪之一。</p>
+      <div class="transit">🚇 Bugis 站搭 MRT 東西線至 City Hall 站轉南北線至 Orchard 站，出站直通商場地下樓，全程約20分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍽️ Food Opera（ION Orchard B4）</span><span class="stop-time">晚餐</span></div>
+      <p class="stop-desc">ION Orchard 地下樓層的高人氣美食街，網羅新加坡多家知名小吃攤，海南雞、叻沙與肉骨茶等經典料理選擇豐富，用餐環境明亮舒適。全區冷氣。</p>
+      <div class="transit">🚶 位於 ION Orchard 地下4樓，商場內電梯直達。</div>
+    </div>
+  </details>
+
+  <details class="day">
+    <summary>8/12（三）牛車水＋聖淘沙斜坡滑車＋克拉碼頭海鮮夜 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：新加坡文化（參觀）＋聖淘沙刺激體驗＋招牌海鮮</div>
+    <div class="alert">🚇 好消息：牛車水（Chinatown）、克拉碼頭（Clarke Quay）、往聖淘沙的 HarbourFront，三個站全部都在「東北線」同一條線上，今天全程不用轉車、也不怕塞車。建議 Skyline Luge 排在下午較晚時段（約14:30後）去，太陽比較不烈，還能玩到傍晚的Sunset Skyride。</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍜 Chinatown Complex</span><span class="stop-type">熟食中心＋傳統市場（風扇通風，參觀為主）</span></div>
+      <p class="stop-desc">新加坡規模最大的熟食中心之一，內有多間米其林推薦平價美食，天天海南雞飯與真真粥品都是人氣排隊名店，很適合來這裡感受在地飲食文化與買個小點心。</p>
+      <div class="transit">🚇 飯店→此處：Lavender 站搭 MRT 東西線至 Outram Park 站轉東北線至 Chinatown 站，全程約20分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🏮 牛車水 Chinatown</span><span class="stop-type">歷史街區</span></div>
+      <p class="stop-desc">新加坡最具代表性的歷史文化街區，色彩繽紛的老店屋與寺廟林立，街道上滿是伴手禮店與肉乾攤，適合悠閒散步感受多元文化交融氛圍。</p>
+      <div class="transit">🚶 與 Chinatown Complex 同區，步行即可逛完整條街。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🧊 Chinatown Point 美食街</span><span class="stop-time">午餐・已替換</span></div>
+      <p class="stop-desc">緊鄰牛車水地鐵站的購物中心，內有冷氣美食街 Food Republic，主打新加坡道地小吃的精緻版本，環境明亮舒適，是逛完牛車水後的理想午餐地點。</p>
+      <div class="swap-note">🧊 原本安排在 Chinatown Complex／Maxwell Food Centre 現場用餐（風扇通風非冷氣），已改到步行可達的 Chinatown Point 冷氣美食街，兩個熟食中心保留為參觀行程。</div>
+      <div class="transit">🚶 就在 Chinatown MRT 站正上方，步行1–2分鐘即達。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🍽️ Maxwell Food Centre</span><span class="stop-type">參觀／買點心（風扇通風，行程較趕可省略）</span></div>
+      <p class="stop-desc">牛車水著名熟食中心，天天海南雞飯（Tian Tian）長年大排長龍，老伴豆花清爽解膩，順路可以過來買個豆花當飯後甜點，不用整餐都在裡面吃；今天加了滑車行程，時間有限的話這站可以跳過。</p>
+      <div class="transit">🚶 從 Chinatown Point 步行約5分鐘可達。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛝 Skyline Luge Sentosa 斜坡滑車</span><span class="stop-time">建議14:30–17:00（每日約11:00–19:30）</span></div>
+      <p class="stop-desc">聖淘沙人氣親子刺激設施，先搭空中吊椅上山賞海景，再自己操控滑車衝下坡道，共4條路線難易不同，大人小孩都能玩，傍晚時段還能欣賞夕陽景色，是新加坡行程中少數的戶外冒險體驗。</p>
+      <div class="transit">🚇 Chinatown 站搭東北線至終點站 HarbourFront（約4站，10分鐘）→ 出站經指標到 VivoCity 3樓搭乘聖淘沙輕軌 Sentosa Express → 在 Beach Station 或 Imbiah Station 下車即達，全程含轉乘約25–30分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🌃 Clarke Quay 克拉碼頭</span><span class="stop-type">河岸商圈</span></div>
+      <p class="stop-desc">新加坡河畔知名夜生活與餐飲商圈，五彩倉庫建築沿河而立，白天適合拍照散步，入夜後燈光點亮河岸，餐廳酒吧氣氛熱鬧。</p>
+      <div class="transit">🚇 玩完滑車後搭 Sentosa Express 回 HarbourFront 站，轉東北線直達 Clarke Quay 站（約4站，10分鐘），全程含轉乘約20分鐘，中途不需換其他路線。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🦀 Jumbo Seafood（Clarke Quay）</span><span class="stop-time">晚餐</span></div>
+      <p class="stop-desc">新加坡最具代表性的海鮮餐廳品牌，招牌辣椒螃蟹與黑胡椒蟹風味濃郁道地，麥片蝦香酥可口，是新加坡行程必吃的招牌海鮮體驗，建議提前訂位。室內冷氣。</p>
+      <div class="transit">🚶 位於 Clarke Quay 河岸區內，步行即達。</div>
+    </div>
+  </details>
+
+  <details class="day">
+    <summary>8/13（四）最後採買日 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：最後採買＋新加坡在地美食</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🥪 Ya Kun Kaya Toast</span><span class="stop-time">早餐</span></div>
+      <p class="stop-desc">新加坡歷史悠久的經典早餐連鎖店，招牌咖椰吐司搭配半熟蛋與 Kopi，是體驗新加坡道地南洋早餐文化最具代表性的選擇，接受度高。多數分店有冷氣。</p>
+      <div class="transit">🚶 Lavender 站附近分店步行可達，或於當天行程沿線分店用餐。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛒 Mustafa Centre</span><span class="stop-type">24小時大型購物中心</span></div>
+      <p class="stop-desc">新加坡著名的24小時不打烊購物中心，商品密度極高，藥妝、零食、巧克力與香料應有盡有，價格實惠，是採買伴手禮的高CP值一站式去處。全館冷氣。</p>
+      <div class="transit">🚇 Lavender 站搭 MRT 東西線至 Bugis 站轉東北線至 Farrer Park 站（約10分鐘），出站步行約5分鐘即達。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🧊 Marina Bay Link Mall 美食街</span><span class="stop-time">晚餐・已替換</span></div>
+      <p class="stop-desc">濱海灣金融區的地下購物美食街，冷氣舒適、選擇多元，鄰近 Lau Pa Sat，也吃得到沙嗲、福建蝦麵等新加坡經典美食，是躲避戶外悶熱的理想選擇。</p>
+      <div class="swap-note">🧊 原本安排在 Lau Pa Sat（維多利亞式歷史建築、僅風扇通風），已改到步行可達的 Marina Bay Link Mall 冷氣美食街；想感受氣氛也可以吃飽後過去 Lau Pa Sat 拍照散步。</div>
+      <div class="transit">🚇 Farrer Park 站搭 MRT 東北線至 Dhoby Ghaut 站轉環線至 Raffles Place 站（約20分鐘），出站步行約3分鐘即達地下街。</div>
+    </div>
+  </details>
+
+  <details class="day">
+    <summary>8/14（五）回台灣 <span class="arrow">▶</span></summary>
+    <div class="day-theme">主題：機場景點＋最後採買＋返程（14:00起飛）</div>
+    <div class="alert">⏰ 提醒：14:00 班機需提早辦理登機，Jewel 的晚間燈光秀（20:00後）當天看不到，行程請以白天瀑布本體與逛街採買為主，建議11:30前完成用餐並前往報到櫃檯。</div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🛍️ Jewel Changi Airport</span><span class="stop-time">24小時開放</span></div>
+      <p class="stop-desc">樟宜機場旁的複合式商場，以玻璃穹頂與室內熱帶雨林景觀聞名，結合購物、餐飲與航廈直通動線，是回程前最後採買與拍照的絕佳地點。</p>
+      <div class="transit">🚇 Raffles Place 站（或飯店最近站）搭 MRT 東西線直達 Changi Airport 站（中途於 Tanah Merah 站轉車），出站直通 Jewel，全程約40–50分鐘。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">💧 Rain Vortex</span><span class="stop-time">瀑布本體每日10:00–22:00</span></div>
+      <p class="stop-desc">世界最高的室內瀑布，高達40公尺，水流自玻璃穹頂傾瀉而下直達地下樓層，白天自然光灑落景色壯觀，是 Jewel 最核心的地標景觀。（燈光秀在晚上才有，當天班機時間看不到）</p>
+      <div class="transit">🚶 進入 Jewel 大門即可看到，位於商場正中央。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🌳 Forest Valley</span><span class="stop-type">室內森林花園</span></div>
+      <p class="stop-desc">環繞瀑布而建的室內熱帶植物園，種植兩千多棵樹木與植栽，步道環繞而上，全天開放且免費，是機場內少見能悠閒散步的綠意空間。</p>
+      <div class="transit">🚶 與 Rain Vortex 同區，沿步道環繞即可參觀。</div>
+    </div>
+    <div class="stop">
+      <div class="stop-head"><span class="stop-name">🎮 Pokémon Center／👟 Nike／🍵 TWG Tea／🎁 Bengawan Solo</span><span class="stop-type">最後採買</span></div>
+      <p class="stop-desc">Jewel 內集結多間特色專賣店，寶可夢周邊、球鞋、新加坡茶葉與班蘭蛋糕、鳳梨酥等伴手禮都能一次購齊，適合出境前最後採購紀念品。全館冷氣。</p>
+      <div class="transit">🚶 分佈於 Jewel 各樓層，商場內步行即可逛完。</div>
+    </div>
+  </details>
+</div>
+
+<footer>行程資訊整理自公開網路資料，實際營業時間、活動內容與轉乘路線請於出發前以官方公告與地圖App即時資訊為準。祝旅途順利、玩得開心！</footer>
+
+<script>
+function toast(msg){
+  const el = document.getElementById('shareToast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 3200);
+}
+
+const PAGE_TITLE = '2026 泰馬新家庭旅遊行程手冊';
+const PAGE_TEXT = '幫大家整理的泰國．馬來西亞．新加坡親子旅遊行程手冊，交通、餐廳、景點都在裡面，點開看看！';
+
+// 分享到 LINE：若目前網址是 http(s) 連結，直接開啟 LINE 分享視窗；
+// 若是本機檔案（file://），改為嘗試分享檔案本身，否則提示改用傳檔案。
+async function shareToLine(){
+  const isWebUrl = location.protocol.startsWith('http');
+  if(isWebUrl){
+    const url = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(location.href)
+      + '&text=' + encodeURIComponent(PAGE_TEXT);
+    window.open(url, '_blank');
+    return;
+  }
+  // 本機檔案：嘗試用系統分享把「檔案」本身叫出來（手機瀏覽器多半支援，會出現LINE選項）
+  const shared = await tryShareFile();
+  if(!shared){
+    toast('這是本機檔案，請直接在 LINE 聊天室點「＋」→「檔案」，選這個 .html 檔傳送即可');
+  }
+}
+
+// 一般分享／複製連結
+async function shareOrCopy(){
+  const isWebUrl = location.protocol.startsWith('http');
+  if(isWebUrl && navigator.share){
+    try{
+      await navigator.share({title: PAGE_TITLE, text: PAGE_TEXT, url: location.href});
+      return;
+    }catch(e){ /* 使用者取消或不支援，往下走複製流程 */ }
+  }
+  if(isWebUrl){
+    try{
+      await navigator.clipboard.writeText(location.href);
+      toast('已複製連結，貼到 LINE 或任何地方分享給家人吧！');
+      return;
+    }catch(e){}
+  }
+  const shared = await tryShareFile();
+  if(!shared){
+    toast('這是本機檔案還沒有網址，建議：① 直接把這個 .html 檔傳給家人（LINE可傳檔案），或 ② 上傳到雲端硬碟／Netlify 取得網址後再用這顆按鈕分享連結');
+  }
+}
+
+// 嘗試用 Web Share API 分享「檔案本身」（部分手機瀏覽器支援，開啟本機html時很有用）
+async function tryShareFile(){
+  try{
+    const resp = await fetch(location.href);
+    const blob = await resp.blob();
+    const file = new File([blob], '泰馬新家庭旅遊行程手冊.html', {type:'text/html'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file], title: PAGE_TITLE, text: PAGE_TEXT});
+      return true;
+    }
+  }catch(e){ /* 不支援或使用者取消 */ }
+  return false;
+}
+</script>
+
+</body>
+</html>
